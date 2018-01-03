@@ -39,5 +39,6 @@
     "systemjs-builder": "^0.16.10",
     "typescript": "^2.5.2",
     "zone.js": "^0.8.17"
-  }
+  },
+  "dependencies": {}
 }

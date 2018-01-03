@@ -60,31 +60,6 @@ gulp.task('images', () => {
         .pipe(gulp.dest('dist/images/'));
 });
 
-gulp.task('scss-lint', function() {
-    return gulp.src('src/scss/**/*.scss')
-        .pipe(scssLint({ config: 'lint.yml' }));
-});
-
-gulp.task('scss', () => {
-    return gulp.src('src/scss/main.scss')
-        .pipe(sass({
-            precision: 10,
-            includePaths: 'node_modules/node-normalize-scss'
-        }))
-        .pipe(concat('styles.css'))
-        .pipe(cssPrefixer())
-        .pipe(gulp.dest('dist/css/'));
-});
-
-gulp.task('test-run', [ 'tsc' ], () => {
-    return gulp.src('test/**/*.spec.js')
-        .pipe(mocha());
-});
-
-gulp.task('test', [ 'test-run' ], () => {
-    return del('build');
-});
-
 gulp.task('minify', () => {
     var js = gulp.src('dist/js/bundle.js')
         .pipe(jsMinify())
@@ -97,40 +72,23 @@ gulp.task('minify', () => {
     return merge(js, css);
 });
 
-gulp.task('watch', () => {
-    var watchTs = gulp.watch('src/app/**/**.ts', [ 'system-build' ]),
-        watchScss = gulp.watch('src/scss/**/*.scss', [ 'scss-lint', 'scss' ]),
-        watchHtml = gulp.watch('src/**/*.html', [ 'html' ]),
-        watchImages = gulp.watch('src/images/**/*.*', [ 'images' ]),
 
-        onChanged = function(event) {
-            console.log('File ' + event.path + ' was ' + event.type + '. Running tasks...');
-        };
-
-    watchTs.on('change', onChanged);
-    watchScss.on('change', onChanged);
-    watchHtml.on('change', onChanged);
-    watchImages.on('change', onChanged);
-});
-
-gulp.task('watchtests', () => {
-    var watchTs = gulp.watch('src/app/**/**.ts', [ 'test-run' ]),
-        watchTests = gulp.watch('test/**/*.spec.js', [ 'test-run' ]),
-
-    onChanged = function(event) {
-        console.log('File ' + event.path + ' was ' + event.type + '. Running tasks...');
-    };
-
-    watchTs.on('change', onChanged);
-    watchTests.on('change', onChanged);
+gulp.task('scss', () => {
+    return gulp.src('src/scss/main.scss')
+        .pipe(sass({
+            precision: 10,
+            includePaths: 'node_modules/node-normalize-scss'
+        }))
+        .pipe(concat('styles.css'))
+        .pipe(cssPrefixer())
+        .pipe(gulp.dest('dist/css/'));
 });
 
 gulp.task('default', [
     'shims',
+    'scss',
     'system-build',
     'html',
-    'images',
-    'scss-lint',
-    'scss'
+    'images'
 ]);
 
